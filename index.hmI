@@ -1,1 +1,279 @@
-https://chatgpt.com/library/share/libfile_4934de6c205481918272ddc10bf46f70?account_id=personal
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>15 ступенів</title>
+
+<style>
+body {
+    margin: 0;
+    padding: 15px;
+    background: #f2f2f7;
+    font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+}
+
+.container {
+    max-width: 500px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 25px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.subtitle {
+    text-align: center;
+    color: #777;
+}
+
+.current {
+    text-align: center;
+    background: #f2f2f7;
+    padding: 25px;
+    border-radius: 20px;
+    margin: 20px 0;
+}
+
+.step {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.stake {
+    font-size: 48px;
+    font-weight: bold;
+    margin: 10px;
+}
+
+.wins {
+    color: #555;
+}
+
+button {
+    width: 100%;
+    border: none;
+    border-radius: 18px;
+    padding: 20px;
+    margin-top: 10px;
+    font-size: 21px;
+    font-weight: bold;
+}
+
+.win {
+    background: #b9f6c5;
+}
+
+.loss {
+    background: #ffc5c5;
+}
+
+.reset {
+    background: #e5e5ea;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.stat {
+    background: #f2f2f7;
+    padding: 13px;
+    border-radius: 15px;
+}
+
+.label {
+    color: #777;
+    font-size: 13px;
+}
+
+.value {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 4px;
+}
+
+.message {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: bold;
+    min-height: 24px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Менеджер ставок</h1>
+
+<div class="subtitle">
+15 ступенів • виплата 92%
+</div>
+
+<div class="current">
+
+<div class="step" id="step">
+СТУПІНЬ №1
+</div>
+
+<div class="stake" id="stake">
+$0.50
+</div>
+
+<div class="wins" id="wins">
+Виграшів: 0 / 3
+</div>
+
+</div>
+
+<button class="win" onclick="win()">
+🟢 ВИГРАШ
+</button>
+
+<button class="loss" onclick="loss()">
+🔴 ПРОГРАШ
+</button>
+
+<button class="reset" onclick="resetGame()">
+↻ СКИНУТИ
+</button>
+
+<div class="message" id="message"></div>
+
+<div class="stats">
+
+<div class="stat">
+<div class="label">Результат</div>
+<div class="value" id="balance">$0.00</div>
+</div>
+
+<div class="stat">
+<div class="label">До +$75</div>
+<div class="value" id="target">$75.00</div>
+</div>
+
+<div class="stat">
+<div class="label">Угод</div>
+<div class="value" id="trades">0</div>
+</div>
+
+<div class="stat">
+<div class="label">Повних циклів</div>
+<div class="value" id="cycles">0</div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const stakes = [
+0.50,
+0.75,
+1.25,
+2.00,
+2.25,
+3.00,
+6.25,
+10.00,
+15.00,
+18.75,
+27.50,
+40.00,
+81.25,
+93.75,
+130.06
+];
+
+const payout = 0.92;
+const target = 75;
+
+let step = 0;
+let wins = 0;
+let balance = 0;
+let trades = 0;
+let cycles = 0;
+
+function update() {
+
+    document.getElementById("step").innerText =
+        "СТУПІНЬ №" + (step + 1);
+
+    document.getElementById("stake").innerText =
+        "$" + stakes[step].toFixed(2);
+
+    document.getElementById("wins").innerText =
+        "Виграшів: " + wins + " / 3";
+
+    document.getElementById("balance").innerText =
+        (balance >= 0 ? "+" : "") +
+        "$" + balance.toFixed(2);
+
+    document.getElementById("target").innerText =
+        "$" + Math.max(0, target - balance).toFixed(2);
+
+    document.getElementById("trades").innerText =
+        trades;
+
+    document.getElementById("cycles").innerText =
+        cycles;
+}
+
+function win() {
+
+    const stake = stakes[step];
+
+    balance += stake * payout;
+
+    trades++;
+    wins++;
+
+    if (wins === 3) {
+
+        wins = 0;
+        cycles++;
+        step = 0;
+
+        document.getElementById("message").innerText =
+            "✅ 3 виграші! Повернення на №1";
+
+    } else {
+
+        document.getElementById("message").innerText =
+            "✅ Виграш! Залишаємось на №" + (step + 1);
+    }
+
+    if (balance >= target) {
+
+        document.getElementById("message").innerText =
+            "🎯 Ціль +$75 досягнута!";
+    }
+
+    update();
+}
+
+function loss() {
+
+    const stake = stakes[step];
+
+    balance -= stake;
+
+    trades++;
+
+    wins = 0;
+
+    if (step < stakes.length - 1) {
+
+        step++;
+
+        document.getElementById("message").inner
